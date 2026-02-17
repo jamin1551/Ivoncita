@@ -18,7 +18,7 @@
             overflow: hidden;
         }
 
-        /* --- CONTENEDOR DEL SOBRE --- */
+        /* --- CONTENEDOR DEL SOBRE (Corregido) --- */
         .envelope-wrapper {
             position: relative;
             width: 280px;
@@ -36,6 +36,7 @@
             box-shadow: 0 15px 35px rgba(216, 27, 96, 0.2);
         }
 
+        /* Tapa del sobre */
         .envelope::before {
             content: "";
             position: absolute;
@@ -54,6 +55,7 @@
             z-index: 1;
         }
 
+        /* LA CARTA */
         .card {
             position: absolute;
             top: 10px;
@@ -62,7 +64,6 @@
             height: 140px;
             background: white;
             display: flex;
-            flex-direction: column;
             justify-content: center;
             align-items: center;
             border-radius: 5px;
@@ -152,6 +153,7 @@
         .bl3 { background: #d500f9; top: 65%; animation-delay: 8s; }
         .bl4 { background: #651fff; top: 25%; animation-delay: 12s; }
 
+        /* Lluvia de pétalos */
         .floating {
             position: absolute;
             bottom: -50px;
@@ -178,7 +180,7 @@
 <body>
 
     <audio id="musicaFondo" loop preload="auto">
-        <source src="https://raw.githubusercontent.com/jamin1551/lvoncita/main/musica.mp3" type="audio/mpeg">
+        <source src="musica.mp3" type="audio/mpeg">
     </audio>
 
     <div class="envelope-wrapper" onclick="abrirCarta()">
@@ -208,21 +210,17 @@
             const musica = document.getElementById('musicaFondo');
             
             if(!env.classList.contains('open')) {
-                // 1. Abrir sobre visualmente
                 env.classList.add('open');
                 guia.style.display = 'none';
                 
-                // 2. Intentar reproducir música inmediatamente con el clic de apertura
-                musica.play().catch(e => {
-                    console.log("El navegador bloqueó el autoplay al abrir. Se activará con el siguiente botón.", e);
-                });
-
-                // 3. Mostrar botón después de que suba la carta
+                // REPRODUCCIÓN AL ABRIR:
+                // El navegador ahora lo permite porque viene de un clic directo del usuario
+                musica.play().catch(e => console.log("Audio bloqueado por el navegador:", e));
+                
                 setTimeout(() => {
                     btn.style.display = 'block';
                 }, 1000);
 
-                // 4. Iniciar lluvia de pétalos
                 for(let i=0; i < 50; i++) {
                     setTimeout(crearElemento, i * 150);
                 }
@@ -231,13 +229,10 @@
 
         function soltarGlobos(event) {
             event.stopPropagation();
-            
-            // Asegurar que la música suene si no empezó antes
-            const musica = document.getElementById('musicaFondo');
-            musica.play();
-
             document.getElementById('balloon-box').style.display = 'block';
             document.getElementById('btn-sorpresa').innerText = "🎈 ¡Te amo muchísimo! 🎈";
+            // Respaldo de música por si el primer clic falló
+            document.getElementById('musicaFondo').play();
         }
 
         function crearElemento() {
