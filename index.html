@@ -18,22 +18,22 @@
             overflow: hidden;
         }
 
-        /* --- CONTENEDOR DEL SOBRE (Corregido) --- */
+        /* Contenedor del sobre */
         .envelope-wrapper {
             position: relative;
-            width: 280px;
-            height: 180px;
             cursor: pointer;
-            z-index: 10;
+            z-index: 5;
         }
 
         .envelope {
             position: relative;
-            width: 100%;
-            height: 100%;
+            width: 280px;
+            height: 180px;
             background: #ff8da1;
-            border-radius: 0 0 10px 10px;
+            border-bottom-left-radius: 10px;
+            border-bottom-right-radius: 10px;
             box-shadow: 0 15px 35px rgba(216, 27, 96, 0.2);
+            z-index: 4;
         }
 
         /* Tapa del sobre */
@@ -41,8 +41,7 @@
             content: "";
             position: absolute;
             top: 0;
-            left: 0;
-            z-index: 4;
+            z-index: 10; /* La tapa siempre arriba al inicio */
             border-top: 100px solid #ffafbd;
             border-left: 140px solid transparent;
             border-right: 140px solid transparent;
@@ -50,12 +49,12 @@
             transition: transform 0.6s ease;
         }
 
-        .open.envelope::before {
+        .envelope.open::before {
             transform: rotateX(180deg);
-            z-index: 1;
+            z-index: 1; /* Al abrirse pasa atrás */
         }
 
-        /* LA CARTA */
+        /* LA CARTA (Oculta al inicio) */
         .card {
             position: absolute;
             top: 10px;
@@ -67,93 +66,28 @@
             justify-content: center;
             align-items: center;
             border-radius: 5px;
-            transition: transform 0.8s ease, opacity 0.5s;
-            z-index: 2;
+            transition: transform 0.8s ease;
+            z-index: 2; /* Debajo de la tapa */
             padding: 20px;
             box-sizing: border-box;
             text-align: center;
-            opacity: 0;
+            opacity: 0; /* Totalmente invisible al inicio */
         }
 
-        .open .card {
+        /* Movimiento cuando se abre */
+        .envelope.open .card {
             transform: translateY(-130px);
-            opacity: 1;
+            opacity: 1; /* Se vuelve visible al subir */
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
 
-        .card h1 { color: #d81b60; font-size: 1.5rem; margin: 0; }
-
-        /* --- BOTÓN SORPRESA --- */
-        #btn-sorpresa {
-            display: none;
-            margin-top: 50px;
-            padding: 12px 25px;
-            background-color: #d81b60;
-            color: white;
-            border: none;
-            border-radius: 25px;
-            font-weight: bold;
-            cursor: pointer;
-            z-index: 20;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        .card h1 {
+            color: #d81b60;
+            font-size: 1.5rem;
+            margin: 0;
         }
 
-        /* --- GLOBOS --- */
-        .balloon-system {
-            display: none;
-            position: fixed;
-            width: 100%;
-            height: 100%;
-            top: 0;
-            left: 0;
-            pointer-events: none;
-        }
-
-        .balloon {
-            position: absolute;
-            right: -250px;
-            width: 90px;
-            height: 115px;
-            border-radius: 50% 50% 50% 50% / 45% 45% 55% 55%;
-            animation: driftAcross 15s linear infinite;
-        }
-
-        .balloon::after {
-            content: "";
-            position: absolute;
-            bottom: -35px;
-            left: 50%;
-            width: 1px;
-            height: 35px;
-            background: rgba(0,0,0,0.3);
-        }
-
-        .mini-card {
-            position: absolute;
-            bottom: -90px;
-            left: -45px;
-            width: 180px;
-            background: white;
-            padding: 10px;
-            border-radius: 8px;
-            font-size: 0.75rem;
-            color: #444;
-            border: 1px solid #ff8da1;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-            text-align: center;
-        }
-
-        @keyframes driftAcross {
-            0% { transform: translateX(0) rotate(0deg); }
-            100% { transform: translateX(-130vw) rotate(-10deg); }
-        }
-
-        .bl1 { background: #ff5252; top: 15%; animation-delay: 0s; }
-        .bl2 { background: #ff4081; top: 40%; animation-delay: 4s; }
-        .bl3 { background: #d500f9; top: 65%; animation-delay: 8s; }
-        .bl4 { background: #651fff; top: 25%; animation-delay: 12s; }
-
-        /* Lluvia de pétalos */
+        /* Lluvia de elementos */
         .floating {
             position: absolute;
             bottom: -50px;
@@ -173,16 +107,14 @@
             font-weight: bold;
             animation: pulse 1.5s infinite;
         }
-
         @keyframes pulse { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
     </style>
 </head>
 <body>
 
-    <audio id="musicaFondo" loop preload="auto">
-        <source src="musica.mp3" type="audio/mpeg">
-    </audio>
-
+<audio id="audioYellow" preload="auto">
+    <source src="musica.mp3" type="audio/mpeg">
+</audio>
     <div class="envelope-wrapper" onclick="abrirCarta()">
         <div class="envelope" id="envelope">
             <div class="card">
@@ -192,51 +124,29 @@
     </div>
 
     <div class="instruction" id="textoGuia">Haz clic para abrir, Ivoncita 💌</div>
-    
-    <button id="btn-sorpresa" onclick="soltarGlobos(event)">✨ Presiona aquí, mi amor ✨</button>
-
-    <div class="balloon-system" id="balloon-box">
-        <div class="balloon bl1"><div class="mini-card">Hay más de 600 millones de gatos en el mundo... ¡Y te amo mucho más que a eso! 🐱</div></div>
-        <div class="balloon bl2"><div class="mini-card">El universo se expande cada segundo, igual que mi amor por ti. ✨</div></div>
-        <div class="balloon bl3"><div class="mini-card">Si cada estrella fuera un beso, te daría la galaxia entera. 🌌❤️</div></div>
-        <div class="balloon bl4"><div class="mini-card">Eres mi notificación favorita. ¡Gracias por existir! 🌹</div></div>
-    </div>
 
     <script>
         function abrirCarta() {
             const env = document.getElementById('envelope');
+            const music = document.getElementById('audioYellow');
             const guia = document.getElementById('textoGuia');
-            const btn = document.getElementById('btn-sorpresa');
-            const musica = document.getElementById('musicaFondo');
             
             if(!env.classList.contains('open')) {
                 env.classList.add('open');
                 guia.style.display = 'none';
                 
-                // REPRODUCCIÓN AL ABRIR:
-                // El navegador ahora lo permite porque viene de un clic directo del usuario
-                musica.play().catch(e => console.log("Audio bloqueado por el navegador:", e));
+                // Reproducir música (Importante: volumen alto)
+                music.play().catch(e => console.log("Error al reproducir:", e));
                 
-                setTimeout(() => {
-                    btn.style.display = 'block';
-                }, 1000);
-
-                for(let i=0; i < 50; i++) {
-                    setTimeout(crearElemento, i * 150);
+                // Lluvia de elementos
+                for(let i=0; i < 70; i++) {
+                    setTimeout(crearElemento, i * 120);
                 }
             }
         }
 
-        function soltarGlobos(event) {
-            event.stopPropagation();
-            document.getElementById('balloon-box').style.display = 'block';
-            document.getElementById('btn-sorpresa').innerText = "🎈 ¡Te amo muchísimo! 🎈";
-            // Respaldo de música por si el primer clic falló
-            document.getElementById('musicaFondo').play();
-        }
-
         function crearElemento() {
-            const iconos = ['🌸', '❤️', '💖', '🌹', '✨', '💕', '🌷'];
+            const iconos = ['🌸', '❤️', '🎈', '💖', '🌹', '✨', '💕', '🌷', '🟡'];
             const el = document.createElement('div');
             el.className = 'floating';
             el.innerText = iconos[Math.floor(Math.random() * iconos.length)];
@@ -249,6 +159,7 @@
     </script>
 </body>
 </html>
+
 
 
 
