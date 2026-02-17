@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Para Ivoncita ❤️</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #ffdae9; /* Un rosado más vivo */
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+        }
+
+        /* --- SOBRE --- */
+        .envelope-wrapper {
+            position: relative;
+            cursor: pointer;
+            z-index: 5;
+        }
+
+        .envelope {
+            position: relative;
+            width: 280px;
+            height: 180px;
+            background: #ff8da1;
+            border-bottom-left-radius: 10px;
+            border-bottom-right-radius: 10px;
+            box-shadow: 0 15px 35px rgba(216, 27, 96, 0.2);
+        }
+
+        .envelope::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            z-index: 4;
+            border-top: 100px solid #ffafbd;
+            border-left: 140px solid transparent;
+            border-right: 140px solid transparent;
+            transform-origin: top;
+            transition: transform 0.6s ease;
+        }
+
+        .envelope.open::before {
+            transform: rotateX(180deg);
+            z-index: 0;
+        }
+
+        /* --- CARTA --- */
+        .card {
+            position: absolute;
+            top: 10px;
+            left: 20px;
+            width: 240px;
+            height: 140px;
+            background: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 5px;
+            transition: transform 0.8s ease;
+            z-index: 2;
+            padding: 20px;
+            box-sizing: border-box;
+            text-align: center;
+        }
+
+        .envelope.open .card {
+            transform: translateY(-120px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .card h1 {
+            color: #d81b60;
+            font-size: 1.5rem;
+        }
+
+        /* --- GLOBOS Y FLORES --- */
+        .floating {
+            position: absolute;
+            bottom: -50px;
+            font-size: 2rem;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(-110vh) rotate(360deg); opacity: 0; }
+        }
+
+        .instruction {
+            margin-top: 50px;
+            color: #d81b60;
+            font-weight: bold;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <audio id="audioYellow">
+        <source src="http://googleusercontent.com/file_content/0" type="audio/mpeg">
+    </audio>
+
+    <div class="envelope-wrapper" onclick="abrirCarta()">
+        <div class="envelope" id="envelope">
+            <div class="card">
+                <h1>Te amo Ivoncita ❤️</h1>
+            </div>
+        </div>
+    </div>
+
+    <div class="instruction" id="textoGuia">Haz clic para abrir, Ivoncita 💌</div>
+
+    <script>
+        function abrirCarta() {
+            const env = document.getElementById('envelope');
+            const music = document.getElementById('audioYellow');
+            const guia = document.getElementById('textoGuia');
+            
+            if(!env.classList.contains('open')) {
+                env.classList.add('open');
+                guia.style.display = 'none';
+                
+                // Reproduce Yellow de Coldplay
+                music.play();
+                
+                // Lluvia de amor
+                for(let i=0; i < 70; i++) {
+                    setTimeout(crearElemento, i * 100);
+                }
+            }
+        }
+
+        function crearElemento() {
+            const iconos = ['🌸', '❤️', '🎈', '💖', '🌹', '✨', '💕', '🌷', '🟡'];
+            const el = document.createElement('div');
+            el.className = 'floating';
+            el.innerText = iconos[Math.floor(Math.random() * iconos.length)];
+            el.style.left = Math.random() * 100 + 'vw';
+            const duracion = 3 + Math.random() * 5;
+            el.style.animation = `floatUp ${duracion}s linear forwards`;
+            document.body.appendChild(el);
+            setTimeout(() => el.remove(), duracion * 1000);
+        }
+    </script>
+</body>
+</html>
