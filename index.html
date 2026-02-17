@@ -197,7 +197,7 @@
         <div class="balloon bl1"><div class="mini-card">Hay más de 600 millones de gatos en el mundo... ¡Y te amo mucho más que a eso! 🐱</div></div>
         <div class="balloon bl2"><div class="mini-card">El universo se expande cada segundo, igual que mi amor por ti. ✨</div></div>
         <div class="balloon bl3"><div class="mini-card">Si cada estrella fuera un beso, te daría la galaxia entera. 🌌❤️</div></div>
-        <div class="balloon bl4"><div class="mini-card">Eres mi notificación favorita. 🌹</div></div>
+        <div class="balloon bl4"><div class="mini-card">Eres mi notificación favorita. ¡Gracias por existir! 🌹</div></div>
     </div>
 
     <script>
@@ -205,15 +205,24 @@
             const env = document.getElementById('envelope');
             const guia = document.getElementById('textoGuia');
             const btn = document.getElementById('btn-sorpresa');
+            const musica = document.getElementById('musicaFondo');
             
             if(!env.classList.contains('open')) {
+                // 1. Abrir sobre visualmente
                 env.classList.add('open');
                 guia.style.display = 'none';
                 
+                // 2. Intentar reproducir música inmediatamente con el clic de apertura
+                musica.play().catch(e => {
+                    console.log("El navegador bloqueó el autoplay al abrir. Se activará con el siguiente botón.", e);
+                });
+
+                // 3. Mostrar botón después de que suba la carta
                 setTimeout(() => {
                     btn.style.display = 'block';
                 }, 1000);
 
+                // 4. Iniciar lluvia de pétalos
                 for(let i=0; i < 50; i++) {
                     setTimeout(crearElemento, i * 150);
                 }
@@ -223,17 +232,12 @@
         function soltarGlobos(event) {
             event.stopPropagation();
             
-            // ACTIVAR MÚSICA Y GLOBOS
+            // Asegurar que la música suene si no empezó antes
             const musica = document.getElementById('musicaFondo');
-            musica.play().catch(e => {
-                console.log("Error al reproducir audio:", e);
-                // Intento secundario si el primero falla
-                musica.muted = false;
-                musica.play();
-            });
+            musica.play();
 
             document.getElementById('balloon-box').style.display = 'block';
-            document.getElementById('btn-sorpresa').innerText = "🎈 ¡Escucha nuestra canción! 🎈";
+            document.getElementById('btn-sorpresa').innerText = "🎈 ¡Te amo muchísimo! 🎈";
         }
 
         function crearElemento() {
@@ -250,6 +254,7 @@
     </script>
 </body>
 </html>
+
 
 
 
