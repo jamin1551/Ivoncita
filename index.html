@@ -18,29 +18,31 @@
             overflow: hidden;
         }
 
-        /* --- SOBRE (TU CÓDIGO) --- */
+        /* --- CONTENEDOR DEL SOBRE --- */
         .envelope-wrapper {
             position: relative;
+            width: 280px;
+            height: 180px;
             cursor: pointer;
             z-index: 10;
         }
 
         .envelope {
             position: relative;
-            width: 280px;
-            height: 180px;
-            background: #ff8da1;
-            border-bottom-left-radius: 10px;
-            border-bottom-right-radius: 10px;
+            width: 100%;
+            height: 100%;
+            background: #ff8da1; /* Color base del sobre */
+            border-radius: 0 0 10px 10px;
             box-shadow: 0 15px 35px rgba(216, 27, 96, 0.2);
-            z-index: 4;
         }
 
+        /* Tapa del sobre mejorada */
         .envelope::before {
             content: "";
             position: absolute;
             top: 0;
-            z-index: 10;
+            left: 0;
+            z-index: 4;
             border-top: 100px solid #ffafbd;
             border-left: 140px solid transparent;
             border-right: 140px solid transparent;
@@ -48,11 +50,12 @@
             transition: transform 0.6s ease;
         }
 
-        .envelope.open::before {
+        .open.envelope::before {
             transform: rotateX(180deg);
             z-index: 1;
         }
 
+        /* LA CARTA */
         .card {
             position: absolute;
             top: 10px;
@@ -65,7 +68,7 @@
             justify-content: center;
             align-items: center;
             border-radius: 5px;
-            transition: transform 0.8s ease;
+            transition: transform 0.8s ease, opacity 0.5s;
             z-index: 2;
             padding: 20px;
             box-sizing: border-box;
@@ -73,7 +76,7 @@
             opacity: 0;
         }
 
-        .envelope.open .card {
+        .open .card {
             transform: translateY(-130px);
             opacity: 1;
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
@@ -81,10 +84,10 @@
 
         .card h1 { color: #d81b60; font-size: 1.3rem; margin: 0; }
 
-        /* --- BOTÓN MÁGICO --- */
+        /* --- BOTÓN SORPRESA --- */
         #btn-sorpresa {
             display: none;
-            margin-top: 20px;
+            margin-top: 50px;
             padding: 12px 25px;
             background-color: #d81b60;
             color: white;
@@ -94,10 +97,9 @@
             cursor: pointer;
             z-index: 20;
             box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-            animation: pulse 1.5s infinite;
         }
 
-        /* --- GLOBOS SECUENCIALES --- */
+        /* --- GLOBOS --- */
         .balloon-system {
             display: none;
             position: fixed;
@@ -113,6 +115,139 @@
             right: -250px;
             width: 90px;
             height: 115px;
-            border-radius: 50% 50% 50% 50% / 45% 45
+            border-radius: 50% 50% 50% 50% / 45% 45% 55% 55%;
+            animation: driftAcross 15s linear infinite;
+        }
+
+        .balloon::after {
+            content: "";
+            position: absolute;
+            bottom: -35px;
+            left: 50%;
+            width: 1px;
+            height: 35px;
+            background: rgba(0,0,0,0.3);
+        }
+
+        .mini-card {
+            position: absolute;
+            bottom: -90px;
+            left: -45px;
+            width: 180px;
+            background: white;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            color: #444;
+            border: 1px solid #ff8da1;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        @keyframes driftAcross {
+            0% { transform: translateX(0) rotate(0deg); }
+            100% { transform: translateX(-130vw) rotate(-10deg); }
+        }
+
+        .bl1 { background: #ff5252; top: 15%; animation-delay: 0s; }
+        .bl2 { background: #ff4081; top: 40%; animation-delay: 4s; }
+        .bl3 { background: #d500f9; top: 65%; animation-delay: 8s; }
+        .bl4 { background: #651fff; top: 25%; animation-delay: 12s; }
+
+        /* Decoración de pétalos */
+        .floating {
+            position: absolute;
+            bottom: -50px;
+            font-size: 2rem;
+            pointer-events: none;
+            z-index: 100;
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(-110vh) rotate(360deg); opacity: 0; }
+        }
+
+        .instruction {
+            margin-top: 50px;
+            color: #d81b60;
+            font-weight: bold;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
+    </style>
+</head>
+<body>
+
+    <audio id="musicaFondo" loop>
+        <source src="https://raw.githubusercontent.com/jamin1551/lvoncita/main/musica.mp3" type="audio/mpeg">
+    </audio>
+
+    <div class="envelope-wrapper" onclick="abrirCarta()">
+        <div class="envelope" id="envelope">
+            <div class="card">
+                <h1>Te amo Ivoncita ❤️</h1>
+                <p style="font-size: 0.8rem; color: #888;">Eres lo más lindo que tengo</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="instruction" id="textoGuia">Haz clic para abrir, Ivoncita 💌</div>
+    
+    <button id="btn-sorpresa" onclick="soltarGlobos(event)">✨ Presiona aquí, mi amor ✨</button>
+
+    <div class="balloon-system" id="balloon-box">
+        <div class="balloon bl1"><div class="mini-card">Hay más de 600 millones de gatos en el mundo... ¡Y te amo mucho más que a eso! 🐱</div></div>
+        <div class="balloon bl2"><div class="mini-card">El universo se expande cada segundo, igual que mi amor por ti. ✨</div></div>
+        <div class="balloon bl3"><div class="mini-card">Si cada estrella fuera un beso, te daría la galaxia entera. 🌌❤️</div></div>
+        <div class="balloon bl4"><div class="mini-card">Eres mi notificación favorita y mi pensamiento constante. 🌹</div></div>
+    </div>
+
+    <script>
+        function abrirCarta() {
+            const env = document.getElementById('envelope');
+            const guia = document.getElementById('textoGuia');
+            const btn = document.getElementById('btn-sorpresa');
+            
+            if(!env.classList.contains('open')) {
+                env.classList.add('open');
+                guia.style.display = 'none';
+                
+                setTimeout(() => {
+                    btn.style.display = 'block';
+                }, 1000);
+
+                // Lluvia de pétalos
+                for(let i=0; i < 50; i++) {
+                    setTimeout(crearElemento, i * 150);
+                }
+            }
+        }
+
+        function soltarGlobos(event) {
+            event.stopPropagation(); // Evita conflictos con el clic del sobre
+            
+            const musica = document.getElementById('musicaFondo');
+            musica.play().catch(e => console.log("Audio play error:", e));
+
+            document.getElementById('balloon-box').style.display = 'block';
+            document.getElementById('btn-sorpresa').innerText = "🎈 ¡Escucha nuestra canción! 🎈";
+        }
+
+        function crearElemento() {
+            const iconos = ['🌸', '❤️', '💖', '🌹', '✨', '💕', '🌷'];
+            const el = document.createElement('div');
+            el.className = 'floating';
+            el.innerText = iconos[Math.floor(Math.random() * iconos.length)];
+            el.style.left = Math.random() * 100 + 'vw';
+            const duracion = 4 + Math.random() * 4;
+            el.style.animation = `floatUp ${duracion}s linear forwards`;
+            document.body.appendChild(el);
+            setTimeout(() => el.remove(), duracion * 1000);
+        }
+    </script>
+</body>
+</html>
 
 
