@@ -36,7 +36,6 @@
             box-shadow: 0 15px 35px rgba(216, 27, 96, 0.2);
         }
 
-        /* Tapa del sobre */
         .envelope::before {
             content: "";
             position: absolute;
@@ -55,7 +54,6 @@
             z-index: 1;
         }
 
-        /* LA CARTA */
         .card {
             position: absolute;
             top: 10px;
@@ -179,9 +177,9 @@
 </head>
 <body>
 
-<audio id="audioYellow" preload="auto">
-    <source src="musica.mp3" type="audio/mpeg">
-</audio>
+    <audio id="musicaFondo" loop preload="auto">
+        <source src="https://raw.githubusercontent.com/jamin1551/lvoncita/main/musica.mp3" type="audio/mpeg">
+    </audio>
 
     <div class="envelope-wrapper" onclick="abrirCarta()">
         <div class="envelope" id="envelope">
@@ -193,7 +191,7 @@
 
     <div class="instruction" id="textoGuia">Haz clic para abrir, Ivoncita 💌</div>
     
-    <button id="btn-sorpresa" onclick="soltarGlobos(event)">✨ Presiona aquí ✨</button>
+    <button id="btn-sorpresa" onclick="soltarGlobos(event)">✨ Presiona aquí, mi amor ✨</button>
 
     <div class="balloon-system" id="balloon-box">
         <div class="balloon bl1"><div class="mini-card">Hay más de 600 millones de gatos en el mundo... ¡Y te amo mucho más que a eso! 🐱</div></div>
@@ -207,14 +205,10 @@
             const env = document.getElementById('envelope');
             const guia = document.getElementById('textoGuia');
             const btn = document.getElementById('btn-sorpresa');
-            const musica = document.getElementById('musicaFondo');
             
             if(!env.classList.contains('open')) {
                 env.classList.add('open');
                 guia.style.display = 'none';
-                
-                // LA MÚSICA COMIENZA AQUÍ (Al abrir la carta)
-                musica.play().catch(e => console.log("El navegador requiere clic previo para audio:", e));
                 
                 setTimeout(() => {
                     btn.style.display = 'block';
@@ -228,8 +222,18 @@
 
         function soltarGlobos(event) {
             event.stopPropagation();
+            
+            // ACTIVAR MÚSICA Y GLOBOS
+            const musica = document.getElementById('musicaFondo');
+            musica.play().catch(e => {
+                console.log("Error al reproducir audio:", e);
+                // Intento secundario si el primero falla
+                musica.muted = false;
+                musica.play();
+            });
+
             document.getElementById('balloon-box').style.display = 'block';
-            document.getElementById('btn-sorpresa').innerText = "🎈🎈";
+            document.getElementById('btn-sorpresa').innerText = "🎈 ¡Escucha nuestra canción! 🎈";
         }
 
         function crearElemento() {
